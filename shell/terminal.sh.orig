@@ -1,0 +1,5 @@
+#!/bin/bash
+terminology -n=DesktopConsole -g'60x50+0+0' &
+#sleep 2
+#terminology -Hn=DesktopLogs -g='75x23+500+0' -e "journalctl -fab" &
+exit 0

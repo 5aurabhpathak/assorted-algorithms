@@ -1,0 +1,5 @@
+*.out
+data/
+__pycache__/
+Undeleted(corrupt)/
+__init__.py
