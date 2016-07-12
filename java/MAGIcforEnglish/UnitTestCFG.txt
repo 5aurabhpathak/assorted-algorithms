@@ -1,0 +1,33 @@
+S -->  in O418 prp vbz O416 , O420 O416 , O420 O416 , O420 in O418 nns vbz O418 I417 in I419 prp vbz prp , O420 vbg , vbz rp prp$ jj O416 nns . 
+S -->  O415 nns md vb jj . 
+S -->  O415 P278 O418 O416 in O416 in O415 in O416 in O415 O420 N10 
+S -->  in O418 O416 in O418 O416 , O418 jj O415 nns G175 , vbn N302 
+S -->  O418 nnps vbp prp O418 N10 
+S -->  O415 P278 O418 O416 N383 
+S -->  wrb prp vbz vbn G421 nns , prp vbz prp O418 O416 in O418 nns in O418 O416 , O420 N383 
+S -->  in O418 O416 in O418 O416 , O418 jj O415 nns G175 , vbn to N302 
+G421 -->  cd 
+G421 -->  cd G421 
+O420 -->  cc 
+O420 -->  
+I419 -->  wdt I419 
+I419 -->  
+O418 -->  
+O418 -->  dt 
+I417 -->  O416 I417 
+I417 -->  
+O416 -->  O416 O416 
+O416 -->  
+O416 -->  nn 
+O415 -->  
+O415 -->  nnp 
+N383 -->  in O418 O416 in O418 N118 
+N302 -->  vb G175 O418 O416 in prp$ N118 
+P278 -->  P278 P278 
+P278 -->  vbd 
+G175 -->  rb 
+G175 -->  G175 G175 
+G174 -->  nn 
+G174 -->  O416 O416 
+N118 -->  O416 . 
+N10 -->  O415 . 
