@@ -91,5 +91,4 @@ public final class FCMClassifier extends Classifier {
         }
         return sum;
     }
-
 }
