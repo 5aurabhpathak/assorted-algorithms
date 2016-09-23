@@ -7,7 +7,8 @@ import rule
 import search
 
 #Reading File Pointers
-input= codecs.open('data/input/test1.txt', encoding='utf-8',mode='r');
+#input= codecs.open('data/input/test1.txt', encoding='utf-8',mode='r');
+input= codecs.open('/home/phoenix/Omkar Sir\'s stuff/Elucidata/Code/Input/ip.txt', encoding='utf-8',mode='r');
 
 #Writeing File Pointers
 #output = codecs.open('data/output/test1.txt', encoding='utf-8',mode='w');
