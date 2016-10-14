@@ -1,24 +1,21 @@
-// ifelse.cpp -- using the if else statement
 #include <iostream>
+#include <bitset>
+using namespace std;
+class A
+{
+	int a;
+	public:
+		A(int a): a(a) {}
+		A operator+(const int a) const
+		{
+			return A(this->a+a);
+		}
+};
+
 int main()
 {
-char ch;
-std::cout << "Type, and I shall repeat.\n";
-std::cin.get(ch);
-while (ch != '.')
-{
-if (ch == '\n')
-std::cout << ch;
- // done if newline
-else
-std::cout << ch + 1;
- // done otherwise
-std::cin.get(ch);
+	A x(4);
+	//A y = x-4;      //compile error: 'operator-' not defined!(python rocks here)
+	bitset<16> b("0000");
+	cout << b.empty() << endl;
 }
-// try ch + 1 instead of ++ch for interesting effect
-std::cout << "\nPlease excuse the slight confusion.\n";
-// std::cin.get();
-// std::cin.get();
-return 0;
-}
-
