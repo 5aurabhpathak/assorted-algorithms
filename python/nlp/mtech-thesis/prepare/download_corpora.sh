@@ -3,7 +3,7 @@
 #First step
 #downloads and extracts the corpora
 #corpus downloaded: www.statmt.org/lm-benchmark (4.3 GB uncompressed, 32.1M senetences, 1B < vocabulary size!) and IITB Hindi-English Parallel corpus (1.5M pair of senetences)
-cd /home/phoenix/src/python/nlp/mtech-thesis/data/downloaded_corpora
+cd $HOME/src/python/nlp/mtech-thesis/data/downloaded_corpora
 echo Downloading monolingual data...
 wget -nc http://www.statmt.org/lm-benchmark/1-billion-word-language-modeling-benchmark-r13output.tar.gz
 echo -n Extracting...
@@ -11,8 +11,8 @@ mkdir -p ../corpus/monolingual
 tar -C ../corpus/monolingual -zxf 1-billion-word-language-modeling-benchmark-r13output.tar.gz 1-billion-word-language-modeling-benchmark-r13output/training-monolingual.tokenized.shuffled 1-billion-word-language-modeling-benchmark-r13output/heldout-monolingual.tokenized.shuffled/news.en-00000-of-00100 --strip-components 2
 echo done.
 echo Downloading bilingual data...
-wget -nc --user=wat2016 --password=wat321 http://www.cfilt.iitb.ac.in/iitb_parallel/iitb_corpus_download/parallel.tgz
-wget -nc --user=wat2016 --password=wat321 http://www.cfilt.iitb.ac.in/iitb_parallel/iitb_corpus_download/dev_test_tokenized.tgz
+wget -nc --user=wat2016 --ask-password http://www.cfilt.iitb.ac.in/iitb_parallel/iitb_corpus_download/parallel.tgz
+wget -nc --user=wat2016 --ask-password http://www.cfilt.iitb.ac.in/iitb_parallel/iitb_corpus_download/dev_test_tokenized.tgz
 echo -n Extracting...
 mkdir -p ../corpus/bilingual
 tar -zxf parallel.tgz -C ../corpus/bilingual
@@ -35,6 +35,6 @@ do
 	cat $x >> monolingual.tok.en
 	rm -f $x
 done
-cat ../bilingual/parallel/IITB.en-hi.en >> monolingual.tok.en
+cat ../bilingual/parallel/IITB.en-hi.tok.en >> monolingual.tok.en
 echo done.
 exit 0

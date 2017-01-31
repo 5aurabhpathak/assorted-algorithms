@@ -1,6 +1,10 @@
 *.out
+ttyecho
 data/
 __pycache__/
 Undeleted(corrupt)/
 __init__.py
 *.pyc
+*~
+*.swo
+*.swp

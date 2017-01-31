@@ -28,7 +28,7 @@ for x in $(ls /dev/pts)
 do
 	if [[ $x != "ptmx" ]]
 	then
-		/home/phoenix/ttyecho /dev/pts/$x . /etc/environment
+		/home/phoenix/src/c/ttyecho /dev/pts/$x . /etc/environment
 	fi
 done
 echo successfully set new proxy
