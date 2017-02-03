@@ -1,0 +1,3 @@
+[submodule "python/nlp/mtech-thesis"]
+	path = python/nlp/mtech-thesis
+	url = https://github.com/5aurabhpathak/masters-thesis
