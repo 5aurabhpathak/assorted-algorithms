@@ -2,7 +2,7 @@ import requests, time, ssl
 
 host = 'https://api.coinsecure.in/v1'
 
-def make_url(path): return '{}/{}'.format(host, path)
+def to_url(path): return '{}/{}'.format(host, path)
 def make_csvline(response): return ','.join(list(map(str, response.values())))
 
 if __name__ == '__main__':
@@ -10,7 +10,7 @@ if __name__ == '__main__':
         prevTimestamp = None
         while True:
             try:
-                response = requests.get(make_url('exchange/ticker')).json()['message']
+                response = requests.get(to_url('exchange/ticker')).json()['message']
                 #print(response)
                 if response['timestamp'] != prevTimestamp:
                     line = make_csvline(response)
