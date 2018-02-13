@@ -11,11 +11,11 @@ if __name__ == '__main__':
         while True:
             try:
                 response = requests.get(to_url('exchange/ticker')).json()['message']
-                #print(response)
+                print(response)
                 if response['timestamp'] != prevTimestamp:
                     line = make_csvline(response)
                     print(line)
-                    dbfile.write(line)
+                    #dbfile.write(line)
                     prevTimestamp = response['timestamp']
             except ssl.SSLEOFError: print('Non-fatal error occured.')
             time.sleep(1)
