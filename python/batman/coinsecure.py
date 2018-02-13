@@ -17,36 +17,33 @@ class Exchange(ccxt.coinsecure):
             prevTimestamp = None
             while True:
                 try:
+                    print('Sending query to exchange...')
                     response = self.fetchTicker('BTC/INR')
-                    if response['timestamp'] != prevTimestamp:
+                    if response['timestamp']:
                         self.data, prevTimestamp = response['info'], response['timestamp']
                         print(self.data)
                         updated.set()
+                        print('Notifying predictor')
                 except ssl.SSLEOFError: print('Non-fatal error occured.')
                 time.sleep(2)
         thread = Thread(target=thread_exec)
         thread.start()
 
-    def attach(self, plot): plot.add(self.data)
-
-class Plot:
+class Plot(Thread):
     def __init__(self):
-        self.__handles = []
-        self.__lines = [[] for x in self.__handles]
+        self.fig = pl.figure('Live')
+        self.__handles, self.__lines = [], []
+        super().__init__()
     
-    def add(self, data): self.__handles.append(data)
+    def attach(self, data): self.__handles.append(data), self.__lines.append([])
     
-    def update(self):
-        def thread_exec():
-            while True:
-                updated.wait()
-                for x in self.__lines:
-                    self.x.append(data)
-                    pl.plot(x)
-                self.fig.canvas.draw()
-                time.sleep(2)
-        thread = Thread(target=thread_exec)
-        thread.start()
+    def run(self):
+        while True:
+            updated.wait()
+            for i, x in enumerate(self.__handles): self.__lines[i].append(eval(x))
+            for x in self.__lines: pl.plot(x)
+            self.fig.canvas.draw()
+            time.sleep(2)
 
 class Classifier(abc.ABC):
     def __init__(self, exchange): self.exchange = exchange
@@ -80,6 +77,7 @@ class SMA(Classifier):
             sp, bp = None, None
             while True:
                 updated.wait()
+                print('Predictor received notify')
                 if sp != self.exchange.data['ask']:
                     sp = self.exchange.data['ask']
                     self.__sp_window.append(sp)
@@ -91,6 +89,7 @@ class SMA(Classifier):
                 print(self.__sp_window, self.__bp_window)
                 print('sp: {}'.format(predict_sp), 'bp: {}'.format(predcit_bp))
                 updated.clear()
+                print('Waiting for notify')
         thread = Thread(target=thread_exec)
         thread.start()
 
@@ -98,7 +97,10 @@ exchange = Exchange()
 exchange.checkForUpdate()
 predictor = SMA(exchange, window_size=3)
 predictor.predict()
-time.sleep(4)
-Plot(exchange.data['bid'], predictor.predict_bp).update()
+plot = Plot()
+updated.wait()
+plot.attach("exchange.data['bid']")
+plot.attach('predictor.predict_bp')
+plot.start()
 pl.show()
 
