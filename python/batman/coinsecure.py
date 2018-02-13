@@ -1,11 +1,10 @@
-# coding: utf-8
-
+#Author: Saurabh Pathak
+#Bot
 import ccxt, abc, time, ssl
+from ccxt.base import errors
 from statistics import mean
 from threading import Thread, Event
 from matplotlib import pyplot as pl
-
-updated = Event()
 
 class Exchange(ccxt.coinsecure):
     def __init__(self):
@@ -19,34 +18,53 @@ class Exchange(ccxt.coinsecure):
                 try:
                     print('Sending query to exchange...')
                     response = self.fetchTicker('BTC/INR')
-                    if response['timestamp']:
+                    if response['timestamp'] != prevTimestamp:
                         self.data, prevTimestamp = response['info'], response['timestamp']
                         print(self.data)
                         updated.set()
                         print('Notifying predictor')
-                except ssl.SSLEOFError: print('Non-fatal error occured.')
+                except (ssl.SSLEOFError, errors.RequestTimeout): print('Non-fatal error occured.')
                 time.sleep(2)
         thread = Thread(target=thread_exec)
         thread.start()
 
 class Plot(Thread):
-    def __init__(self):
-        self.fig = pl.figure('Live')
+    def __init__(self, exchange, predictor):
+        self.fig, self.exchange, self.predictor = pl.figure('Live'), exchange, predictor
         self.__handles, self.__lines = [], []
         super().__init__()
-    
-    def attach(self, data): self.__handles.append(data), self.__lines.append([])
-    
-    def run(self):
+
+    def run(self, *, live_attributes=None, predict_sp=True, predict_bp=True):
+        if live_attributes is None: live_attributes = 'bid', 'ask'
+        lines = [list() for x in range(len(live_attributes))]
+        if predict_sp or predict_bp:
+            markermap = {-1: 'v', 0: '_', 1: '^'}
+            if predict_bp: bp_points, lbp = [], 0
+            if predict_sp: sp_points, lsp = [], 0
         while True:
             updated.wait()
-            for i, x in enumerate(self.__handles): self.__lines[i].append(eval(x))
-            for x in self.__lines: pl.plot(x)
+            if predict_sp or predict_bp: predicted.wait()
+            print('Plotter received notify.')
+            if predict_bp:
+                bp_points.append(colourmap[self.predictor.predict_bp])
+                lbp += 1
+            if predict_sp:
+                sp_points.append(colourmap[self.predictor.predict_sp])
+                lsp += 1
+            for i, x in enumerate(live_attributes):
+                lines[i].append(self.exchange.data[x])
+                pl.plot(lines[i])
+                if x == 'bid' and predict_bp:
+                    pointsnumpy.vstack(list(range(lbp)), lines[i])
+                    pl.scatter(, c='r', marker='v')
+                if x == 'ask' and predict_sp:
+                    pl.scatter(list(range(lsp)), lines[i], c=sp_points)
             self.fig.canvas.draw()
+            predicted.clear()
             time.sleep(2)
 
 class Classifier(abc.ABC):
-    def __init__(self, exchange): self.exchange = exchange
+    def __init__(self, exchange): self.exchange, self.predict_sp, self.predict_bp = exchange, None, None
     
     @abc.abstractmethod
     def predict(self): pass
@@ -63,7 +81,7 @@ class _Window(list):
             
 class SMA(Classifier):
     def __init__(self, exchange, *, window_size=20):
-        self.__window_size, self.predict_sp, self.predict_bp = window_size, None, None
+        self.__window_size =  window_size
         self.__sp_window, self.__bp_window = _Window(window_size), _Window(window_size)
         super().__init__(exchange)
     
@@ -81,26 +99,23 @@ class SMA(Classifier):
                 if sp != self.exchange.data['ask']:
                     sp = self.exchange.data['ask']
                     self.__sp_window.append(sp)
-                    predict_sp = classify(mean(self.__sp_window), sp)
+                    self.predict_sp = classify(mean(self.__sp_window), sp)
                 if bp != self.exchange.data['bid']:
                     bp = self.exchange.data['bid']
                     self.__bp_window.append(bp)
-                    predcit_bp = classify(mean(self.__bp_window), bp)
+                    self.predict_bp = classify(mean(self.__bp_window), bp)
                 print(self.__sp_window, self.__bp_window)
-                print('sp: {}'.format(predict_sp), 'bp: {}'.format(predcit_bp))
+                print('sp: {}'.format(self.predict_sp), 'bp: {}'.format(self.predict_bp))
+                predicted.set()
                 updated.clear()
                 print('Waiting for notify')
         thread = Thread(target=thread_exec)
         thread.start()
 
-exchange = Exchange()
+exchange, updated, predicted = Exchange(), Event(), Event()
 exchange.checkForUpdate()
 predictor = SMA(exchange, window_size=3)
 predictor.predict()
-plot = Plot()
-updated.wait()
-plot.attach("exchange.data['bid']")
-plot.attach('predictor.predict_bp')
+plot = Plot(exchange, predictor)
 plot.start()
 pl.show()
-
