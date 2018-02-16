@@ -8,20 +8,19 @@ class Plot(Thread):
         self.__predict_sp, self.__predict_bp, self.__live_attributes = predict_sp, predict_bp, live_attributes
         for x in live_attributes:
             pl.figure('Live {}'.format(x))
-            pl.xlim(xmin=0)
             pl.ticklabel_format(axis='y', style='plain')
         super().__init__()
         
     def run(self):
         def helper(arr, arr_col, val):
             x, = numpy.nonzero(arr == val)
-            pl.scatter(x, lines[i][x], c=arr_col, marker=markermap[val])
+            if x.size > 0: pl.scatter(x, lines[i][x], c=arr_col[x], marker=markermap[val])
 
         def choose_colour(arr, arr_col):
             try:
-                if ((lines[i][-2] > lines[i][-1] and arr[-1] == -1) or
-                    (lines[i][-2] < lines[i][-1] and arr[-1] == 1) or
-                    (lines[i][-2] == lines[i][-1] and arr[-1] == 0)): arr_col[-1] = 'g'
+                if ((lines[i][-2] > lines[i][-1] and arr[-2] == -1) or
+                    (lines[i][-2] < lines[i][-1] and arr[-2] == 1) or
+                    (lines[i][-2] == lines[i][-1] and arr[-2] == 0)): arr_col[-1] = 'g'
                 else: arr_col[-1] = 'r'
             except IndexError: pass
             arr_col = numpy.append(arr_col, 'y')
@@ -40,6 +39,7 @@ class Plot(Thread):
             print('Plotter received notify.')
             for i, a in enumerate(self.__live_attributes):
                 pl.figure('Live {}'.format(a))
+                pl.gcf().clear()
                 lines[i] = numpy.append(lines[i], self.exchange.data[a]/100)
                 pl.plot(lines[i])
                 if a == 'bid' and self.__predict_bp:
