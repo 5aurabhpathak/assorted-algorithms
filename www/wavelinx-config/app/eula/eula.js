@@ -1,1 +1,0 @@
-!function(){"use strict";function Eula($state,$scope,$rootScope){$rootScope.currentState=$state.current.name}angular.module("app.eula").controller("Eula",Eula),Eula.$inject=["$state","$scope","$rootScope"]}();
