@@ -1,0 +1,1 @@
+!function(){"use strict";function LegalDisclaimer($state,$scope,$rootScope,$http,Disclaimers){var vm=this;$rootScope.currentState=$state.current.name,vm.legalDisclaimerData=Disclaimers}angular.module("app.legaldisclaimer").controller("LegalDisclaimer",LegalDisclaimer),LegalDisclaimer.$inject=["$state","$scope","$rootScope","$http","Disclaimers"]}();
