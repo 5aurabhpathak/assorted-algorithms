@@ -1,3 +1,6 @@
+/*
+Program for linux systems. Used in situations where output of a command running on one terminal is desired on another open terminal
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
